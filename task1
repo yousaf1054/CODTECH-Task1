@@ -1,0 +1,142 @@
+from tkinter import *
+import re
+
+# Function to calculate the strength of the password
+
+
+def password_strength(x, y):
+    strength = 0
+
+    # Check the length of the password
+    if y < 8:
+        strength = 0
+    elif 8 <= y < 12:
+        strength += 1
+    else:
+        strength += 2
+
+    # Check for uppercase letters
+    if re.search(r"[A-Z]", x):
+        strength += 2
+    # Check for lowercase letters
+    if re.search(r"[a-z]", x):
+        strength += 1
+    # Check for numbers
+    if re.search(r"[0-9]", x):
+        strength += 2
+    # Check for special characters
+    if re.search(r"[!@#$%&*^?/<>]", x):
+        strength += 3
+
+    # Check if the password is a common password
+    common_x = ["12345678", "abcd", "password", "apple", "house", "banana", "jimmy", "1111111"]
+    if x in common_x:
+        strength = 0
+    else:
+        strength += 2
+
+    return strength
+
+# Function to generate suggestions for improving the password
+
+
+def generate_suggestions(x):
+    suggestions = []
+
+    # Suggest increasing the length if it's less than 8 characters
+    if len(x) < 8:
+        suggestions.append('Your password must be at least 8 characters long.')
+
+    # Suggest adding an uppercase letter
+    if not re.search(r"[A-Z]", x):
+        suggestions.append('Use at least one uppercase letter (A-Z) in your password.')
+
+    # Suggest adding a lowercase letter
+    if not re.search(r"[a-z]", x):
+        suggestions.append('Use at least one lowercase letter (a-z) in your password.')
+
+    # Suggest adding a number
+    if not re.search(r"[0-9]", x):
+        suggestions.append('Use at least one number (0-9) in your password.')
+
+    # Suggest adding a special character
+    if not re.search(r"[!@#$%&*^?/<>]", x):
+        suggestions.append('Use at least one special character (!@#$%&*^?/<>).')
+
+    # Suggest avoiding common passwords
+    common_x = ["12345678", "abcd", "password", "apple", "house", "banana", "jimmy", "1111111"]
+    if x in common_x:
+        suggestions.append("Avoid using common passwords like 'password', '12345678', etc.")
+
+    return suggestions
+
+# Function to check the password and update the GUI
+
+
+def check_x():
+    x = entry.get()  # Get the password entered by the user
+    y = len(x)  # Get the length of the password
+    strength = password_strength(x, y)  # Calculate the strength of the password
+
+    if not x:
+        result_label.config(text="Please enter the password", fg="blue")
+    else:
+        # Update the result label based on the strength
+        if 0 <= strength < 3:
+            result_label.config(text="The password is 'VERY WEAK'!!!!", fg="red")
+        elif 3 <= strength < 6:
+            result_label.config(text="The password is 'WEAK'!!!!", fg="red")
+        elif 6 <= strength < 9:
+            result_label.config(text="The password is 'MODERATE'!", fg="#FFD700")
+        elif 9 <= strength < 12:
+            result_label.config(text="The password is 'STRONG'", fg="green")
+        else:
+            result_label.config(text="The password is 'VERY STRONG'", fg="green")
+
+        # Show suggestions and label2 only if strength is less than 9
+        if strength < 9:
+            label2.config(text="Suggestions:", fg="green")  # Display the "Suggestions:" label
+            suggestions = generate_suggestions(x)  # Generate suggestions for improvement
+            suggestion_text = "\n".join(suggestions)  # Format suggestions as a single string
+            suggestion_label.config(text=suggestion_text, fg="blue")  # Update the suggestion label
+        else:
+            label2.config(text="")  # Hide the "Suggestions:" label if the password is strong enough
+            suggestion_label.config(text="")  # Clear suggestions if the password is strong enough
+
+# Set up the main application window
+
+
+root = Tk()
+root.title("Password Strength Test Tool")
+root.geometry("699x650")
+root.configure(bg="white")
+
+label0 = Label(root, text="CHECK  YOUR  PASSWORD  STRENGTH", font="arial", bg="white", fg="red")
+label0.place(x=170, y=50)
+
+# Label for password entry
+label1 = Label(root, text="Enter Password:", font="Helvetica", bg="white", fg="black")
+label1.place(x=50, y=120)
+
+# Entry widget for password input
+entry = Entry(root, width=60)
+entry.place(x=225, y=125)
+
+# Button to check the password strength
+button = Button(root, text="Check Strength", command=check_x, font="system", bg="blue", fg="white")
+button.place(x=290, y=180)
+
+# Label to display the password strength result
+result_label = Label(root, text="", font="bold", bg="white")
+result_label.place(x=215, y=230)
+
+# Label for suggestions (initially empty)
+label2 = Label(root, text="", font="bold", bg="white", fg="green")
+label2.place(x=50, y=280)
+
+# Label to display suggestions for improving the password (initially empty)
+suggestion_label = Label(root, text="", font="bold", bg="white", fg="blue")
+suggestion_label.place(x=115, y=310)
+
+# Start the Tkinter event loop
+root.mainloop()
