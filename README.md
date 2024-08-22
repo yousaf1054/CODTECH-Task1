@@ -16,6 +16,8 @@ The objective of this project is to develop a Password Strength Test Tool using 
 
 ## Project:*Password Strength Test Tool*
 
+![Uploading Screenshot 2024-08-22 064124.png…]()
+
 ## Key Features:
 
 1. *Password Strength Evaluation:* Assesses the strength of passwords based on length, use of uppercase and lowercase letters, numbers, special characters, and avoidance of common passwords.
